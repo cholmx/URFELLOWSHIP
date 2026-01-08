@@ -54,9 +54,7 @@ const Header: React.FC<{ currentPage: Page; setCurrentPage: (page: Page) => void
         <div className="flex items-center justify-between h-20">
           <div className="flex-shrink-0">
             <button onClick={() => setCurrentPage('Home')} className="flex items-center space-x-3">
-              <div className="h-10 w-10 bg-brand-text text-white flex items-center justify-center rounded-md font-header font-extrabold text-lg">
-                UR
-              </div>
+              <img src="/logonegtransblack.png" alt="Grace Hill Church" className="h-10 w-10" />
               <span className="font-header font-extrabold text-2xl tracking-tight">UPPER ROOM</span>
             </button>
           </div>
