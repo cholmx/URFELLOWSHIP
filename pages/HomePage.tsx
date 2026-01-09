@@ -1,16 +1,30 @@
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { Page } from '../App';
-import { SERMONS } from '../data/mockData';
+import type { ChurchEvent, Sermon } from '../types';
 import SermonCard from '../components/SermonCard';
+import EventCard from '../components/EventCard';
 import FadeInOnScroll from '../components/FadeInOnScroll';
 
 interface HomePageProps {
   setCurrentPage: (page: Page) => void;
+  events: ChurchEvent[];
+  sermons: Sermon[];
 }
 
-const HomePage: React.FC<HomePageProps> = ({ setCurrentPage }) => {
-  const latestSermon = SERMONS[0];
+const HomePage: React.FC<HomePageProps> = ({ setCurrentPage, events, sermons }) => {
+  const latestSermon = useMemo(() => {
+    if (!sermons || sermons.length === 0) return null;
+    return [...sermons].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+  }, [sermons]);
+
+  const upcomingEvents = useMemo(() => {
+    const now = new Date();
+    return events
+      .filter(event => new Date(event.date) >= now)
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .slice(0, 3);
+  }, [events]);
 
   return (
     <div className="animate-fade-in">
@@ -71,25 +85,51 @@ const HomePage: React.FC<HomePageProps> = ({ setCurrentPage }) => {
       </section>
       
        {/* Latest Sermon Section */}
-       <section className="py-20 bg-brand-bg">
-        <FadeInOnScroll className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-center font-header font-extrabold text-4xl md:text-5xl tracking-tight">Latest Message</h2>
-            <div className="mt-12 max-w-4xl mx-auto">
-                <SermonCard sermon={latestSermon} isFeatured={true} onSelect={() => setCurrentPage('Messages')} />
+       {latestSermon && (
+        <section className="py-20 bg-brand-bg">
+            <FadeInOnScroll className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 className="text-center font-header font-extrabold text-4xl md:text-5xl tracking-tight">Latest Message</h2>
+                <div className="mt-12 max-w-4xl mx-auto">
+                    <SermonCard sermon={latestSermon} isFeatured={true} onSelect={() => setCurrentPage('Messages')} />
+                </div>
+                <div className="text-center mt-8">
+                    <button 
+                        onClick={() => setCurrentPage('Messages')}
+                        className="bg-brand-text text-white font-header font-extrabold uppercase tracking-widest py-3 px-8 rounded-full transition-transform transform hover:scale-105 duration-300 shadow-lg"
+                    >
+                        View All Messages
+                    </button>
+                </div>
+            </FadeInOnScroll>
+        </section>
+       )}
+      
+      {/* Upcoming Events Section */}
+      {upcomingEvents.length > 0 && (
+        <section className="py-20 bg-brand-light-gray">
+          <FadeInOnScroll className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-center font-header font-extrabold text-4xl md:text-5xl tracking-tight">Upcoming Events & Classes</h2>
+            <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {upcomingEvents.map((event, index) => (
+                 <FadeInOnScroll key={event.id} style={{ transitionDelay: `${index * 150}ms` }}>
+                    <EventCard event={event} />
+                 </FadeInOnScroll>
+              ))}
             </div>
-             <div className="text-center mt-8">
-                <button 
-                    onClick={() => setCurrentPage('Messages')}
-                    className="bg-brand-text text-white font-header font-extrabold uppercase tracking-widest py-3 px-8 rounded-full transition-transform transform hover:scale-105 duration-300 shadow-lg"
-                >
-                    View All Messages
-                </button>
+            <div className="text-center mt-12">
+              <button
+                onClick={() => setCurrentPage('Events')}
+                className="bg-brand-text text-white font-header font-extrabold uppercase tracking-widest py-3 px-8 rounded-full transition-transform transform hover:scale-105 duration-300 shadow-lg"
+              >
+                View All Events
+              </button>
             </div>
-        </FadeInOnScroll>
-      </section>
+          </FadeInOnScroll>
+        </section>
+      )}
 
       {/* Quick Links */}
-       <section className="py-20 bg-brand-light-gray">
+       <section className="py-20 bg-brand-bg">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
              <FadeInOnScroll>
                 <h2 className="text-center font-header font-extrabold text-4xl md:text-5xl tracking-tight">
@@ -106,9 +146,9 @@ const HomePage: React.FC<HomePageProps> = ({ setCurrentPage }) => {
                 </FadeInOnScroll>
                  <FadeInOnScroll style={{ transitionDelay: '150ms' }}>
                     <div className="bg-white p-8 rounded-lg shadow-md text-center">
-                        <h3 className="font-header font-extrabold text-2xl">Watch Latest Message</h3>
-                        <p className="mt-2 text-gray-600 h-24">Catch up on recent teachings that will help you grow in faith and apply biblical truths to your daily life.</p>
-                        <button onClick={() => setCurrentPage('Messages')} className="mt-4 text-brand-primary font-header font-bold uppercase tracking-widest">Watch Now</button>
+                        <h3 className="font-header font-extrabold text-2xl">Explore Ministries</h3>
+                        <p className="mt-2 text-gray-600 h-24">Discover the different ministries we offer and find a place where you can connect and serve.</p>
+                        <button onClick={() => setCurrentPage('Ministries')} className="mt-4 text-brand-primary font-header font-bold uppercase tracking-widest">See Ministries</button>
                     </div>
                 </FadeInOnScroll>
                  <FadeInOnScroll style={{ transitionDelay: '300ms' }}>

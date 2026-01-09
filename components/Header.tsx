@@ -21,7 +21,7 @@ const SimpleNavLink: React.FC<NavLinkProps> = ({ page, currentPage, setCurrentPa
   </button>
 );
 
-const navLinks: ({ name: string; page: Page; children?: undefined; } | { name: string; children: { name: string; page: Page; }[]; page?: undefined; })[] = [
+const baseNavLinks: ({ name: string; page: Page; children?: undefined; } | { name: string; children: { name: string; page: Page; }[]; page?: undefined; })[] = [
     { name: 'Home', page: 'Home' },
     {
         name: 'About',
@@ -40,13 +40,16 @@ const navLinks: ({ name: string; page: Page; children?: undefined; } | { name: s
         ],
     },
     { name: 'Messages', page: 'Messages' },
+    { name: 'Events', page: 'Events' },
     { name: 'Give', page: 'Give' },
 ];
 
 
-const Header: React.FC<{ currentPage: Page; setCurrentPage: (page: Page) => void; isAdmin: boolean; }> = ({ currentPage, setCurrentPage, isAdmin }) => {
+const Header: React.FC<{ currentPage: Page; setCurrentPage: (page: Page) => void; isAdmin: boolean; onLogout: () => void; hasUpcomingEvents: boolean; }> = ({ currentPage, setCurrentPage, isAdmin, onLogout, hasUpcomingEvents }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openMobileMenu, setOpenMobileMenu] = useState<string | null>(null);
+
+  const navLinks = hasUpcomingEvents ? baseNavLinks : baseNavLinks.filter(link => link.name !== 'Events');
 
   return (
     <header className="bg-brand-bg/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
@@ -54,7 +57,9 @@ const Header: React.FC<{ currentPage: Page; setCurrentPage: (page: Page) => void
         <div className="flex items-center justify-between h-20">
           <div className="flex-shrink-0">
             <button onClick={() => setCurrentPage('Home')} className="flex items-center space-x-3">
-              <img src="/logonegtransblack.png" alt="Grace Hill Church" className="h-10 w-10" />
+              <div className="h-10 w-10 bg-brand-text text-white flex items-center justify-center rounded-md font-header font-extrabold text-lg">
+                UR
+              </div>
               <span className="font-header font-extrabold text-2xl tracking-tight">UPPER ROOM</span>
             </button>
           </div>
@@ -89,11 +94,15 @@ const Header: React.FC<{ currentPage: Page; setCurrentPage: (page: Page) => void
                     </button>
                     <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                       <div className="py-1" role="menu" aria-orientation="vertical">
-                          <button onClick={() => setCurrentPage('Calendar')} className={`block w-full text-left px-4 py-2 text-sm ${currentPage === 'Calendar' ? 'text-brand-primary' : 'text-brand-text'} hover:bg-gray-100`} role="menuitem">
-                            Events Calendar
+                          <button onClick={() => setCurrentPage('EventsAdmin')} className={`block w-full text-left px-4 py-2 text-sm ${currentPage === 'EventsAdmin' ? 'text-brand-primary' : 'text-brand-text'} hover:bg-gray-100`} role="menuitem">
+                            Manage Events
                           </button>
                            <button onClick={() => setCurrentPage('AdminSettings')} className={`block w-full text-left px-4 py-2 text-sm ${currentPage === 'AdminSettings' ? 'text-brand-primary' : 'text-brand-text'} hover:bg-gray-100`} role="menuitem">
                             Settings
+                          </button>
+                          <div className="border-t my-1"></div>
+                           <button onClick={onLogout} className={`block w-full text-left px-4 py-2 text-sm text-brand-text hover:bg-gray-100`} role="menuitem">
+                            Logout
                           </button>
                       </div>
                     </div>
@@ -136,9 +145,10 @@ const Header: React.FC<{ currentPage: Page; setCurrentPage: (page: Page) => void
               )
             ))}
              {isAdmin && (
-                <div>
-                   <SimpleNavLink page='Calendar' currentPage={currentPage} setCurrentPage={(page) => { setCurrentPage(page); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 text-lg text-red-600">Events Calendar</SimpleNavLink>
+                <div className="border-t pt-2 mt-2">
+                   <SimpleNavLink page='EventsAdmin' currentPage={currentPage} setCurrentPage={(page) => { setCurrentPage(page); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 text-lg text-red-600">Manage Events</SimpleNavLink>
                    <SimpleNavLink page='AdminSettings' currentPage={currentPage} setCurrentPage={(page) => { setCurrentPage(page); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 text-lg text-red-600">Settings</SimpleNavLink>
+                   <button onClick={() => { onLogout(); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 text-lg font-header font-extrabold tracking-normal uppercase text-brand-text">Logout</button>
                 </div>
               )}
           </div>

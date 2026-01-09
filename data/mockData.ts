@@ -9,7 +9,7 @@ export const SERMONS: Sermon[] = [
     series: 'Psalms: Songs of the Heart',
     date: '2024-07-21',
     imageUrl: 'https://images.unsplash.com/photo-1454418243875-2423b473d063?q=80&w=2070&auto=format&fit=crop',
-    youtubeVideoId: '6g3g33_w2_c',
+    youtubeVideoId: '2_92k6tG-o0',
     description: 'Discovering unwavering hope and the presence of God even in life\'s darkest moments, through the lens of Psalm 23.',
     topics: ['hope', 'psalm 23', 'trust', 'suffering'],
     transcript: `(Intro Music fades)

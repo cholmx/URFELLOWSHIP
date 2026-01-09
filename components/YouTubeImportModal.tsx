@@ -88,16 +88,20 @@ const YouTubeImportModal: React.FC<YouTubeImportModalProps> = ({ onImport, onClo
                     {!isLoading && !error && (
                         <div className="space-y-4">
                             {videos.map(video => (
-                                <div key={video.id.videoId} className="flex items-center gap-4 bg-white p-3 rounded-lg shadow-sm">
-                                    <img src={video.snippet.thumbnails.high.url} alt={video.snippet.title} className="w-32 h-20 object-cover rounded-md" />
-                                    <div className="flex-grow">
-                                        <h4 className="font-bold text-sm leading-tight">{video.snippet.title}</h4>
+                                <button
+                                    key={video.id.videoId}
+                                    onClick={() => handleSelectVideo(video)}
+                                    className="w-full flex items-center gap-4 bg-white p-3 rounded-lg shadow-sm text-left transition-all duration-200 hover:shadow-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-primary"
+                                >
+                                    <img src={video.snippet.thumbnails.high.url} alt={video.snippet.title} className="w-32 h-20 object-cover rounded-md flex-shrink-0" />
+                                    <div className="flex-grow overflow-hidden">
+                                        <h4 className="font-bold text-sm leading-tight truncate" title={video.snippet.title}>{video.snippet.title}</h4>
                                         <p className="text-xs text-gray-500 mt-1">{new Date(video.snippet.publishedAt).toLocaleDateString()}</p>
                                     </div>
-                                    <button onClick={() => handleSelectVideo(video)} className="bg-brand-primary text-white text-xs font-bold uppercase tracking-wider py-2 px-4 rounded-md hover:bg-opacity-90">
-                                        Import
-                                    </button>
-                                </div>
+                                    <div className="ml-4 flex-shrink-0 text-brand-primary font-bold text-lg">
+                                        &rarr;
+                                    </div>
+                                </button>
                             ))}
                         </div>
                     )}

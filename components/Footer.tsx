@@ -4,9 +4,11 @@ import type { Page } from '../App';
 
 interface FooterProps {
     setCurrentPage: (page: Page) => void;
+    onAdminLoginClick: () => void;
+    hasUpcomingEvents: boolean;
 }
 
-const Footer: React.FC<FooterProps> = ({ setCurrentPage }) => {
+const Footer: React.FC<FooterProps> = ({ setCurrentPage, onAdminLoginClick, hasUpcomingEvents }) => {
   return (
     <footer className="bg-brand-text text-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -33,6 +35,7 @@ const Footer: React.FC<FooterProps> = ({ setCurrentPage }) => {
                 <li><button onClick={() => setCurrentPage('Ministries')} className="hover:text-brand-primary transition-colors">Ministries</button></li>
                 <li><button onClick={() => setCurrentPage('Prayer')} className="hover:text-brand-primary transition-colors">Prayer</button></li>
                 <li><button onClick={() => setCurrentPage('Contact')} className="hover:text-brand-primary transition-colors">Contact</button></li>
+                {hasUpcomingEvents && <li><button onClick={() => setCurrentPage('Events')} className="hover:text-brand-primary transition-colors">Events</button></li>}
                 <li><button onClick={() => setCurrentPage('Give')} className="hover:text-brand-primary transition-colors">Give</button></li>
               </ul>
             </div>
@@ -47,8 +50,9 @@ const Footer: React.FC<FooterProps> = ({ setCurrentPage }) => {
           </div>
 
         </div>
-        <div className="mt-12 border-t border-gray-700 pt-8 text-center">
-          <p className="text-base text-gray-400 font-body">&copy; {new Date().getFullYear()} Upper Room Fellowship. All rights reserved.</p>
+        <div className="mt-12 border-t border-gray-700 pt-8 text-center text-sm text-gray-500">
+          <p>&copy; {new Date().getFullYear()} Upper Room Fellowship. All rights reserved.</p>
+          <button onClick={onAdminLoginClick} className="mt-2 hover:text-white transition-colors">Admin Login</button>
         </div>
       </div>
     </footer>

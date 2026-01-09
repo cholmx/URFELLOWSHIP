@@ -31,3 +31,13 @@ export interface Ministry {
   imageUrl: string;
   contact: string;
 }
+
+export interface ChurchEvent {
+  id: string;
+  title: string;
+  date: string; // ISO string format for easy sorting and display
+  location: string;
+  imageUrl: string;
+  description: string;
+  category: 'Event' | 'Class';
+}

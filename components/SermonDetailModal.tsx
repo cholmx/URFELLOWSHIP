@@ -3,7 +3,16 @@ import React, { useState } from 'react';
 import type { Sermon } from '../types';
 import { generateSermonInsights, AiSermonInsights } from '../ai';
 
-const SermonDetailModal: React.FC<{ sermon: Sermon; onClose: () => void; onUpdateSermon: (sermon: Sermon) => void; }> = ({ sermon, onClose, onUpdateSermon }) => {
+interface SermonDetailModalProps {
+    sermon: Sermon;
+    onClose: () => void;
+    onUpdateSermon: (sermon: Sermon) => void;
+    onEdit: (sermon: Sermon) => void;
+    onDelete: (sermonId: string) => void;
+    isAdmin: boolean;
+}
+
+const SermonDetailModal: React.FC<SermonDetailModalProps> = ({ sermon, onClose, onUpdateSermon, onEdit, onDelete, isAdmin }) => {
     const hasInitialAiContent = sermon.summary && sermon.discussionQuestions && sermon.themes && sermon.scriptures;
     
     const [aiContent, setAiContent] = useState<AiSermonInsights | null>(
@@ -44,7 +53,6 @@ const SermonDetailModal: React.FC<{ sermon: Sermon; onClose: () => void; onUpdat
         if (aiContent?.discussionQuestions) {
             const questionsText = aiContent.discussionQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n');
             navigator.clipboard.writeText(questionsText);
-            // Optionally, add a visual confirmation
         }
     };
 
@@ -82,11 +90,30 @@ const SermonDetailModal: React.FC<{ sermon: Sermon; onClose: () => void; onUpdat
                     </div>
                      <p className="mt-6 text-gray-700 leading-relaxed">{sermon.description}</p>
                      
+                     {isAdmin && (
+                         <div className="mt-8 pt-6 border-t border-dashed">
+                            <div className="flex items-center justify-end space-x-4">
+                                <button
+                                    onClick={() => onEdit(sermon)}
+                                    className="bg-blue-600 text-white font-header font-bold uppercase tracking-wider text-xs py-2 px-4 rounded-full transition-colors hover:bg-blue-700"
+                                >
+                                    Edit Sermon
+                                </button>
+                                <button
+                                    onClick={() => onDelete(sermon.id)}
+                                    className="bg-red-600 text-white font-header font-bold uppercase tracking-wider text-xs py-2 px-4 rounded-full transition-colors hover:bg-red-700"
+                                >
+                                    Delete Sermon
+                                </button>
+                            </div>
+                         </div>
+                     )}
+
                      <div className="mt-8 pt-8 border-t-2 border-brand-secondary">
-                        <h3 className="font-header font-extrabold text-3xl tracking-tight text-center">AI Sermon Assistant ✨</h3>
+                        <h3 className="font-header font-extrabold text-3xl tracking-tight text-center">AI Study Tools ✨</h3>
                         
                         {!aiContent && !isLoading && (
-                             <div className="text-center mt-6">
+                                <div className="text-center mt-6">
                                 <p className="max-w-xl mx-auto text-gray-600">Go deeper with this message. Generate a concise summary, discussion questions for your small group, key themes, and more.</p>
                                 <button
                                     onClick={handleGenerateInsights}
@@ -117,19 +144,19 @@ const SermonDetailModal: React.FC<{ sermon: Sermon; onClose: () => void; onUpdat
                                     <h4 className="font-header font-extrabold text-xl tracking-normal">Summary</h4>
                                     <p className="mt-2 text-gray-600 leading-relaxed bg-white p-4 rounded-md shadow-sm">{aiContent.summary}</p>
 
-                                     <h4 className="font-header font-extrabold text-xl tracking-normal mt-6">Key Themes & Topics</h4>
-                                     <div className="mt-2 flex flex-wrap gap-2">
+                                        <h4 className="font-header font-extrabold text-xl tracking-normal mt-6">Key Themes & Topics</h4>
+                                        <div className="mt-2 flex flex-wrap gap-2">
                                         {aiContent.themes.map(theme => (
                                             <span key={theme} className="bg-brand-secondary text-brand-text text-sm font-semibold px-3 py-1 rounded-full">{theme}</span>
                                         ))}
-                                     </div>
+                                        </div>
 
-                                      <h4 className="font-header font-extrabold text-xl tracking-normal mt-6">Scripture References</h4>
-                                     <div className="mt-2 flex flex-wrap gap-2">
+                                        <h4 className="font-header font-extrabold text-xl tracking-normal mt-6">Scripture References</h4>
+                                        <div className="mt-2 flex flex-wrap gap-2">
                                         {aiContent.scriptures.map(scripture => (
                                             <span key={scripture} className="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">{scripture}</span>
                                         ))}
-                                     </div>
+                                        </div>
                                 </div>
                                 <div>
                                     <div className="flex justify-between items-center">

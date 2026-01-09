@@ -1,20 +1,24 @@
 
 import React, { useState, useMemo } from 'react';
-import { SERMONS } from '../data/mockData';
 import type { Sermon } from '../types';
 import SermonCard from '../components/SermonCard';
 import SermonDetailModal from '../components/SermonDetailModal';
-import AddSermonForm, { SermonFormData } from '../components/AddSermonForm';
-import { generateSermonInsights } from '../ai';
+import SermonFormModal from '../components/SermonFormModal';
+import type { SermonFormData } from '../components/SermonFormModal';
 import FadeInOnScroll from '../components/FadeInOnScroll';
 
 interface MessagesPageProps {
     isAdmin: boolean;
+    sermons: Sermon[];
+    onSaveSermon: (sermonData: SermonFormData, id?: string) => Promise<void>;
+    onDeleteSermon: (sermonId: string) => void;
+    onUpdateSermon: (sermon: Sermon) => void;
 }
 
-const MessagesPage: React.FC<MessagesPageProps> = ({ isAdmin }) => {
-    const [sermons, setSermons] = useState<Sermon[]>(SERMONS);
-    const [showAddForm, setShowAddForm] = useState(false);
+const MessagesPage: React.FC<MessagesPageProps> = ({ isAdmin, sermons, onSaveSermon, onDeleteSermon, onUpdateSermon }) => {
+    const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+    const [editingSermon, setEditingSermon] = useState<Sermon | null>(null);
+
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedSpeaker, setSelectedSpeaker] = useState('All');
     const [selectedSeries, setSelectedSeries] = useState('All');
@@ -25,9 +29,9 @@ const MessagesPage: React.FC<MessagesPageProps> = ({ isAdmin }) => {
     const series = useMemo(() => ['All', ...new Set(sermons.map(s => s.series))], [sermons]);
     const themes = useMemo(() => ['All', ...new Set(sermons.flatMap(s => s.themes || []).filter(Boolean))], [sermons]);
 
-
     const filteredSermons = useMemo(() => {
-        return sermons
+        return [...sermons]
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
             .filter(sermon => (selectedSpeaker === 'All' || sermon.speaker === selectedSpeaker))
             .filter(sermon => (selectedSeries === 'All' || sermon.series === selectedSeries))
             .filter(sermon => (selectedTheme === 'All' || sermon.themes?.includes(selectedTheme)))
@@ -41,25 +45,28 @@ const MessagesPage: React.FC<MessagesPageProps> = ({ isAdmin }) => {
             });
     }, [sermons, searchTerm, selectedSpeaker, selectedSeries, selectedTheme]);
 
-    const handleAddSermon = async (formData: SermonFormData) => {
-        const insights = await generateSermonInsights(formData.transcript);
-        const newSermon: Sermon = {
-            id: `sermon-${Date.now()}`,
-            ...formData,
-            topics: [...new Set(insights.themes)], // Using themes as topics for now
-            ...insights
-        };
-        setSermons(prev => [newSermon, ...prev]);
-        setShowAddForm(false);
+    const handleOpenAddForm = () => {
+        setEditingSermon(null);
+        setIsFormModalOpen(true);
     };
 
-    const handleUpdateSermon = (updatedSermon: Sermon) => {
-        setSermons(prevSermons => prevSermons.map(s => s.id === updatedSermon.id ? updatedSermon : s));
+    const handleEditSermon = (sermon: Sermon) => {
+        setEditingSermon(sermon);
+        setSelectedSermon(null); // Close detail modal
+        setIsFormModalOpen(true);
     };
 
-    if (showAddForm) {
-        return <AddSermonForm onSubmit={handleAddSermon} onCancel={() => setShowAddForm(false)} />;
-    }
+    const handleDeleteAndCloseModal = (sermonId: string) => {
+        if (window.confirm('Are you sure you want to delete this sermon? This action cannot be undone.')) {
+            onDeleteSermon(sermonId);
+            setSelectedSermon(null);
+        }
+    };
+    
+    const handleSaveAndCloseModal = async (sermonData: SermonFormData, id?: string) => {
+        await onSaveSermon(sermonData, id);
+        setIsFormModalOpen(false);
+    };
 
     return (
         <>
@@ -67,7 +74,17 @@ const MessagesPage: React.FC<MessagesPageProps> = ({ isAdmin }) => {
                 <SermonDetailModal 
                     sermon={selectedSermon} 
                     onClose={() => setSelectedSermon(null)}
-                    onUpdateSermon={handleUpdateSermon}
+                    onUpdateSermon={onUpdateSermon}
+                    onEdit={handleEditSermon}
+                    onDelete={handleDeleteAndCloseModal}
+                    isAdmin={isAdmin}
+                />
+            )}
+            {isFormModalOpen && (
+                <SermonFormModal
+                    sermon={editingSermon}
+                    onSubmit={handleSaveAndCloseModal}
+                    onCancel={() => setIsFormModalOpen(false)}
                 />
             )}
             <div className="animate-fade-in">
@@ -83,7 +100,7 @@ const MessagesPage: React.FC<MessagesPageProps> = ({ isAdmin }) => {
                         <div className="flex justify-between items-center">
                              <h2 className="font-header font-extrabold text-4xl tracking-tight">Subscribe to Our Podcast</h2>
                              {isAdmin && (
-                                <button onClick={() => setShowAddForm(true)} className="bg-brand-primary text-white font-header font-extrabold uppercase tracking-widest py-2 px-5 rounded-full transition-transform transform hover:scale-105 duration-300 shadow-md text-sm">Add New Sermon</button>
+                                <button onClick={handleOpenAddForm} className="bg-brand-primary text-white font-header font-extrabold uppercase tracking-widest py-2 px-5 rounded-full transition-transform transform hover:scale-105 duration-300 shadow-md text-sm">Add New Sermon</button>
                              )}
                         </div>
                         <p className="mt-4 text-lg text-gray-700 leading-relaxed">
