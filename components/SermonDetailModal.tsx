@@ -109,72 +109,74 @@ const SermonDetailModal: React.FC<SermonDetailModalProps> = ({ sermon, onClose, 
                          </div>
                      )}
 
-                     <div className="mt-8 pt-8 border-t-2 border-brand-secondary">
-                        <h3 className="font-header font-extrabold text-3xl tracking-tight text-center">AI Study Tools ✨</h3>
-                        
-                        {!aiContent && !isLoading && (
-                                <div className="text-center mt-6">
-                                <p className="max-w-xl mx-auto text-gray-600">Go deeper with this message. Generate a concise summary, discussion questions for your small group, key themes, and more.</p>
-                                <button
-                                    onClick={handleGenerateInsights}
-                                    disabled={!sermon.transcript}
-                                    className="mt-6 bg-brand-primary text-white font-header font-extrabold uppercase tracking-widest py-3 px-8 rounded-full transition-all transform hover:scale-105 duration-300 shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
-                                >
-                                    Generate Study Tools
-                                </button>
-                                {!sermon.transcript && <p className="text-sm text-red-500 mt-2">A transcript is not available for this sermon.</p>}
-                            </div>
-                        )}
-
-                        {isLoading && (
-                            <div className="text-center mt-8">
-                                <svg className="animate-spin h-10 w-10 text-brand-primary mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                <p className="mt-4 font-header font-bold text-lg text-brand-text">Analyzing sermon... this may take a moment.</p>
-                            </div>
-                        )}
-
-                        {error && <p className="text-center text-red-600 mt-6 bg-red-100 p-4 rounded-md">{error}</p>}
-
-                        {aiContent && (
-                            <div className="mt-8 grid md:grid-cols-2 gap-8 animate-fade-in">
-                                <div>
-                                    <h4 className="font-header font-extrabold text-xl tracking-normal">Summary</h4>
-                                    <p className="mt-2 text-gray-600 leading-relaxed bg-white p-4 rounded-md shadow-sm">{aiContent.summary}</p>
-
-                                        <h4 className="font-header font-extrabold text-xl tracking-normal mt-6">Key Themes & Topics</h4>
-                                        <div className="mt-2 flex flex-wrap gap-2">
-                                        {aiContent.themes.map(theme => (
-                                            <span key={theme} className="bg-brand-secondary text-brand-text text-sm font-semibold px-3 py-1 rounded-full">{theme}</span>
-                                        ))}
-                                        </div>
-
-                                        <h4 className="font-header font-extrabold text-xl tracking-normal mt-6">Scripture References</h4>
-                                        <div className="mt-2 flex flex-wrap gap-2">
-                                        {aiContent.scriptures.map(scripture => (
-                                            <span key={scripture} className="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">{scripture}</span>
-                                        ))}
-                                        </div>
+                     {isAdmin && (
+                        <div className="mt-8 pt-8 border-t-2 border-brand-secondary">
+                            <h3 className="font-header font-extrabold text-3xl tracking-tight text-center">AI Study Tools ✨</h3>
+                            
+                            {!aiContent && !isLoading && (
+                                    <div className="text-center mt-6">
+                                    <p className="max-w-xl mx-auto text-gray-600">Go deeper with this message. Generate a concise summary, discussion questions for your small group, key themes, and more.</p>
+                                    <button
+                                        onClick={handleGenerateInsights}
+                                        disabled={!sermon.transcript}
+                                        className="mt-6 bg-brand-primary text-white font-header font-extrabold uppercase tracking-widest py-3 px-8 rounded-full transition-all transform hover:scale-105 duration-300 shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                    >
+                                        Generate Study Tools
+                                    </button>
+                                    {!sermon.transcript && <p className="text-sm text-red-500 mt-2">A transcript is not available for this sermon.</p>}
                                 </div>
-                                <div>
-                                    <div className="flex justify-between items-center">
-                                        <h4 className="font-header font-extrabold text-xl tracking-normal">Discussion Questions</h4>
-                                        <button onClick={handleCopyQuestions} className="text-sm font-semibold text-brand-primary hover:underline">Copy</button>
+                            )}
+
+                            {isLoading && (
+                                <div className="text-center mt-8">
+                                    <svg className="animate-spin h-10 w-10 text-brand-primary mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    <p className="mt-4 font-header font-bold text-lg text-brand-text">Analyzing sermon... this may take a moment.</p>
+                                </div>
+                            )}
+
+                            {error && <p className="text-center text-red-600 mt-6 bg-red-100 p-4 rounded-md">{error}</p>}
+
+                            {aiContent && (
+                                <div className="mt-8 grid md:grid-cols-2 gap-8 animate-fade-in">
+                                    <div>
+                                        <h4 className="font-header font-extrabold text-xl tracking-normal">Summary</h4>
+                                        <p className="mt-2 text-gray-600 leading-relaxed bg-white p-4 rounded-md shadow-sm">{aiContent.summary}</p>
+
+                                            <h4 className="font-header font-extrabold text-xl tracking-normal mt-6">Key Themes & Topics</h4>
+                                            <div className="mt-2 flex flex-wrap gap-2">
+                                            {aiContent.themes.map(theme => (
+                                                <span key={theme} className="bg-brand-secondary text-brand-text text-sm font-semibold px-3 py-1 rounded-full">{theme}</span>
+                                            ))}
+                                            </div>
+
+                                            <h4 className="font-header font-extrabold text-xl tracking-normal mt-6">Scripture References</h4>
+                                            <div className="mt-2 flex flex-wrap gap-2">
+                                            {aiContent.scriptures.map(scripture => (
+                                                <span key={scripture} className="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">{scripture}</span>
+                                            ))}
+                                            </div>
                                     </div>
-                                    <ul className="mt-2 space-y-3 text-gray-700 bg-white p-4 rounded-md shadow-sm">
-                                        {aiContent.discussionQuestions.map((q, i) => (
-                                            <li key={i} className="flex items-start">
-                                                <span className="font-bold text-brand-primary mr-2">{i + 1}.</span>
-                                                <span>{q}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                    <div>
+                                        <div className="flex justify-between items-center">
+                                            <h4 className="font-header font-extrabold text-xl tracking-normal">Discussion Questions</h4>
+                                            <button onClick={handleCopyQuestions} className="text-sm font-semibold text-brand-primary hover:underline">Copy</button>
+                                        </div>
+                                        <ul className="mt-2 space-y-3 text-gray-700 bg-white p-4 rounded-md shadow-sm">
+                                            {aiContent.discussionQuestions.map((q, i) => (
+                                                <li key={i} className="flex items-start">
+                                                    <span className="font-bold text-brand-primary mr-2">{i + 1}.</span>
+                                                    <span>{q}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                     </div>
+                            )}
+                        </div>
+                     )}
                 </div>
             </div>
         </div>

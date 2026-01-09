@@ -23,7 +23,7 @@ const SermonCard: React.FC<SermonCardProps> = ({ sermon, onSelect, isFeatured = 
                     <p className="mt-4 text-gray-600 font-body leading-relaxed flex-grow">{sermon.description.substring(0, 120)}...</p>
                     <div className="mt-6">
                          <button onClick={onSelect} className="w-full bg-brand-text text-white font-header font-extrabold uppercase tracking-widest py-3 px-4 rounded-full transition-transform transform hover:scale-105 duration-300 text-sm">
-                            View Details & Study Tools
+                            View Message
                          </button>
                     </div>
                 </div>
