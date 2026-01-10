@@ -63,7 +63,7 @@ const YouTubeImportModal: React.FC<YouTubeImportModalProps> = ({ onImport, onClo
     };
 
     return (
-        <div className="fixed inset-0 bg-black/70 z-50 flex justify-center items-center p-4 animate-fade-in" onClick={onClose}>
+        <div className="fixed inset-0 bg-black/80 z-[60] flex justify-center items-center p-4 animate-fade-in" onClick={onClose}>
             <div className="bg-brand-bg rounded-lg shadow-2xl max-w-4xl w-full h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
                 <div className="p-6 border-b flex justify-between items-center">
                     <h2 className="font-header font-extrabold text-2xl">Import Sermon from YouTube</h2>

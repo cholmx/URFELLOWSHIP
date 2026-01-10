@@ -13,6 +13,8 @@ interface SermonDetailModalProps {
 }
 
 const SermonDetailModal: React.FC<SermonDetailModalProps> = ({ sermon, onClose, onUpdateSermon, onEdit, onDelete, isAdmin }) => {
+    const [activeTab, setActiveTab] = useState<'video' | 'guide'>(sermon.isStudyGuidePublished ? 'guide' : 'video');
+    const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
     const hasInitialAiContent = sermon.summary && sermon.discussionQuestions && sermon.themes && sermon.scriptures;
     
     const [aiContent, setAiContent] = useState<AiSermonInsights | null>(
@@ -31,29 +33,26 @@ const SermonDetailModal: React.FC<SermonDetailModalProps> = ({ sermon, onClose, 
             setError("Sorry, a transcript for this sermon is not available to generate insights.");
             return;
         }
-
         setIsLoading(true);
         setError(null);
-
         try {
             const insights = await generateSermonInsights(sermon.transcript);
             setAiContent(insights);
-            const updatedSermon = { ...sermon, ...insights };
-            onUpdateSermon(updatedSermon);
-
+            onUpdateSermon({ ...sermon, ...insights });
         } catch (err) {
-            console.error("Error generating sermon insights:", err);
-            setError("We couldn't generate insights for this sermon at the moment. Please try again later.");
+            setError("Couldn't generate insights. Please try again later.");
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleCopyQuestions = () => {
-        if (aiContent?.discussionQuestions) {
-            const questionsText = aiContent.discussionQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n');
-            navigator.clipboard.writeText(questionsText);
-        }
+    const handleTogglePublish = () => {
+        onUpdateSermon({ ...sermon, isStudyGuidePublished: !sermon.isStudyGuidePublished });
+    };
+
+    const handleActualDelete = () => {
+        onDelete(sermon.id);
+        setIsConfirmingDelete(false);
     };
 
     return (
@@ -65,113 +64,108 @@ const SermonDetailModal: React.FC<SermonDetailModalProps> = ({ sermon, onClose, 
                             <p className="font-header uppercase tracking-widest text-sm text-brand-primary font-extrabold">{sermon.series}</p>
                             <h2 className="font-header font-extrabold text-4xl tracking-tight mt-1">{sermon.title}</h2>
                             <p className="font-accent italic text-2xl text-gray-600 mt-1">{sermon.speaker}</p>
-                             <p className="text-sm text-gray-400 mt-1">{new Date(sermon.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                             <p className="text-sm text-gray-400 mt-1">{new Date(sermon.date).toLocaleDateString()}</p>
                         </div>
                         <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
                             <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                         </button>
                     </div>
 
-                    <div className="mt-6 aspect-video bg-black rounded-md overflow-hidden">
-                        {sermon.youtubeVideoId ? (
-                            <iframe
-                                className="w-full h-full"
-                                src={`https://www.youtube.com/embed/${sermon.youtubeVideoId}`}
-                                title="YouTube video player"
-                                frameBorder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                            ></iframe>
-                        ) : (
-                             <div className="w-full h-full flex items-center justify-center">
-                                <p className="text-white font-header">Video Player Coming Soon</p>
-                             </div>
+                    <div className="mt-6 flex border-b border-gray-200">
+                        <button 
+                            onClick={() => setActiveTab('video')}
+                            className={`px-6 py-2 font-header font-bold uppercase tracking-wider text-sm transition-colors ${activeTab === 'video' ? 'border-b-2 border-brand-primary text-brand-primary' : 'text-gray-500 hover:text-brand-text'}`}
+                        >
+                            Watch / Listen
+                        </button>
+                        {sermon.isStudyGuidePublished && (
+                            <button 
+                                onClick={() => setActiveTab('guide')}
+                                className={`px-6 py-2 font-header font-bold uppercase tracking-wider text-sm transition-colors ${activeTab === 'guide' ? 'border-b-2 border-brand-primary text-brand-primary' : 'text-gray-500 hover:text-brand-text'}`}
+                            >
+                                Study Guide
+                            </button>
                         )}
                     </div>
-                     <p className="mt-6 text-gray-700 leading-relaxed">{sermon.description}</p>
-                     
-                     {isAdmin && (
-                         <div className="mt-8 pt-6 border-t border-dashed">
-                            <div className="flex items-center justify-end space-x-4">
-                                <button
-                                    onClick={() => onEdit(sermon)}
-                                    className="bg-blue-600 text-white font-header font-bold uppercase tracking-wider text-xs py-2 px-4 rounded-full transition-colors hover:bg-blue-700"
-                                >
-                                    Edit Sermon
-                                </button>
-                                <button
-                                    onClick={() => onDelete(sermon.id)}
-                                    className="bg-red-600 text-white font-header font-bold uppercase tracking-wider text-xs py-2 px-4 rounded-full transition-colors hover:bg-red-700"
-                                >
-                                    Delete Sermon
-                                </button>
-                            </div>
-                         </div>
-                     )}
 
-                     {isAdmin && (
-                        <div className="mt-8 pt-8 border-t-2 border-brand-secondary">
-                            <h3 className="font-header font-extrabold text-3xl tracking-tight text-center">AI Study Tools ✨</h3>
-                            
-                            {!aiContent && !isLoading && (
-                                    <div className="text-center mt-6">
-                                    <p className="max-w-xl mx-auto text-gray-600">Go deeper with this message. Generate a concise summary, discussion questions for your small group, key themes, and more.</p>
-                                    <button
-                                        onClick={handleGenerateInsights}
-                                        disabled={!sermon.transcript}
-                                        className="mt-6 bg-brand-primary text-white font-header font-extrabold uppercase tracking-widest py-3 px-8 rounded-full transition-all transform hover:scale-105 duration-300 shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
-                                    >
-                                        Generate Study Tools
-                                    </button>
-                                    {!sermon.transcript && <p className="text-sm text-red-500 mt-2">A transcript is not available for this sermon.</p>}
+                    <div className="mt-6">
+                        {activeTab === 'video' ? (
+                            <div className="aspect-video bg-black rounded-md overflow-hidden">
+                                {sermon.youtubeVideoId ? (
+                                    <iframe className="w-full h-full" src={`https://www.youtube.com/embed/${sermon.youtubeVideoId}`} frameBorder="0" allowFullScreen></iframe>
+                                ) : (
+                                     <div className="w-full h-full flex items-center justify-center text-white">Video Coming Soon</div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="bg-white p-6 rounded-lg shadow-inner animate-fade-in">
+                                <h3 className="font-header font-extrabold text-2xl mb-4">Message Summary</h3>
+                                <p className="text-gray-700 leading-relaxed mb-6">{sermon.summary}</p>
+                                <h3 className="font-header font-extrabold text-2xl mb-4">Discussion Questions</h3>
+                                <ul className="space-y-3">
+                                    {sermon.discussionQuestions?.map((q, i) => (
+                                        <li key={i} className="flex gap-3 text-gray-700">
+                                            <span className="text-brand-primary font-bold">{i+1}.</span>
+                                            <span>{q}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+
+                    <p className="mt-6 text-gray-700 leading-relaxed">{sermon.description}</p>
+                     
+                    {isAdmin && (
+                        <div className="mt-12 pt-8 border-t-2 border-brand-secondary bg-gray-50 -mx-8 -mb-8 p-8">
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="font-header font-extrabold text-3xl tracking-tight text-brand-text">AI Admin Tools ✨</h3>
+                                <div className="flex gap-4">
+                                     {!isConfirmingDelete ? (
+                                         <>
+                                            <button onClick={() => onEdit(sermon)} className="text-xs bg-blue-600 text-white px-4 py-2 rounded-full font-bold uppercase hover:bg-blue-700 transition-colors">Edit</button>
+                                            <button onClick={() => setIsConfirmingDelete(true)} className="text-xs bg-red-600 text-white px-4 py-2 rounded-full font-bold uppercase hover:bg-red-700 transition-colors">Delete</button>
+                                         </>
+                                     ) : (
+                                         <div className="flex items-center gap-2 animate-pulse">
+                                             <span className="text-xs font-bold text-red-600 uppercase">Confirm Delete?</span>
+                                             <button onClick={handleActualDelete} className="text-xs bg-red-700 text-white px-4 py-2 rounded-full font-bold uppercase hover:bg-red-800 transition-colors shadow-lg">Yes, Delete</button>
+                                             <button onClick={() => setIsConfirmingDelete(false)} className="text-xs bg-gray-400 text-white px-4 py-2 rounded-full font-bold uppercase hover:bg-gray-500 transition-colors">Cancel</button>
+                                         </div>
+                                     )}
                                 </div>
+                            </div>
+
+                            {!aiContent && !isLoading && (
+                                <button onClick={handleGenerateInsights} disabled={!sermon.transcript} className="bg-brand-primary text-white font-header font-extrabold uppercase py-3 px-8 rounded-full shadow-md hover:scale-105 transition-transform disabled:opacity-50">
+                                    Generate Study Tools
+                                </button>
                             )}
 
                             {isLoading && (
-                                <div className="text-center mt-8">
-                                    <svg className="animate-spin h-10 w-10 text-brand-primary mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    <p className="mt-4 font-header font-bold text-lg text-brand-text">Analyzing sermon... this may take a moment.</p>
+                                <div className="text-center py-4">
+                                    <svg className="animate-spin h-6 w-6 text-brand-primary mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                    <p className="mt-2 text-sm font-bold">Analyzing sermon content...</p>
                                 </div>
                             )}
 
-                            {error && <p className="text-center text-red-600 mt-6 bg-red-100 p-4 rounded-md">{error}</p>}
-
                             {aiContent && (
-                                <div className="mt-8 grid md:grid-cols-2 gap-8 animate-fade-in">
-                                    <div>
-                                        <h4 className="font-header font-extrabold text-xl tracking-normal">Summary</h4>
-                                        <p className="mt-2 text-gray-600 leading-relaxed bg-white p-4 rounded-md shadow-sm">{aiContent.summary}</p>
-
-                                            <h4 className="font-header font-extrabold text-xl tracking-normal mt-6">Key Themes & Topics</h4>
-                                            <div className="mt-2 flex flex-wrap gap-2">
-                                            {aiContent.themes.map(theme => (
-                                                <span key={theme} className="bg-brand-secondary text-brand-text text-sm font-semibold px-3 py-1 rounded-full">{theme}</span>
-                                            ))}
-                                            </div>
-
-                                            <h4 className="font-header font-extrabold text-xl tracking-normal mt-6">Scripture References</h4>
-                                            <div className="mt-2 flex flex-wrap gap-2">
-                                            {aiContent.scriptures.map(scripture => (
-                                                <span key={scripture} className="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">{scripture}</span>
-                                            ))}
-                                            </div>
-                                    </div>
-                                    <div>
-                                        <div className="flex justify-between items-center">
-                                            <h4 className="font-header font-extrabold text-xl tracking-normal">Discussion Questions</h4>
-                                            <button onClick={handleCopyQuestions} className="text-sm font-semibold text-brand-primary hover:underline">Copy</button>
+                                <div className="space-y-6">
+                                    <div className="flex items-center justify-between p-4 bg-white rounded shadow-sm border border-brand-primary/20">
+                                        <div>
+                                            <p className="font-bold">Study Guide Status</p>
+                                            <p className="text-sm text-gray-500">{sermon.isStudyGuidePublished ? 'Visible to Public' : 'Private (Admin Only)'}</p>
                                         </div>
-                                        <ul className="mt-2 space-y-3 text-gray-700 bg-white p-4 rounded-md shadow-sm">
-                                            {aiContent.discussionQuestions.map((q, i) => (
-                                                <li key={i} className="flex items-start">
-                                                    <span className="font-bold text-brand-primary mr-2">{i + 1}.</span>
-                                                    <span>{q}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
+                                        <button 
+                                            onClick={handleTogglePublish}
+                                            className={`px-6 py-2 rounded-full font-bold uppercase text-xs transition-all ${sermon.isStudyGuidePublished ? 'bg-orange-100 text-orange-700 hover:bg-orange-200' : 'bg-green-600 text-white hover:bg-green-700'}`}
+                                        >
+                                            {sermon.isStudyGuidePublished ? 'Unpublish' : 'Publish to Public'}
+                                        </button>
+                                    </div>
+                                    <div className="grid md:grid-cols-2 gap-8 opacity-60">
+                                        <div className="text-xs bg-white p-3 rounded italic">Summary: {aiContent.summary.substring(0, 100)}...</div>
+                                        <div className="text-xs bg-white p-3 rounded italic">Questions: {aiContent.discussionQuestions.length} generated questions ready.</div>
                                     </div>
                                 </div>
                             )}

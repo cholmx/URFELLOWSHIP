@@ -91,7 +91,6 @@ const SermonFormModal: React.FC<SermonFormModalProps> = ({ sermon, onSubmit, onC
 
     return (
         <>
-            {isImportModalOpen && <YouTubeImportModal onImport={handleImport} onClose={() => setIsImportModalOpen(false)} />}
             <div className="fixed inset-0 bg-black/70 z-50 flex justify-center items-center p-4 animate-fade-in" onClick={onCancel}>
                 <div className="bg-brand-bg rounded-lg shadow-2xl max-w-3xl w-full max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
                     <div className="p-6 border-b flex justify-between items-center">
@@ -151,6 +150,7 @@ const SermonFormModal: React.FC<SermonFormModalProps> = ({ sermon, onSubmit, onC
                     </div>
                 </div>
             </div>
+            {isImportModalOpen && <YouTubeImportModal onImport={handleImport} onClose={() => setIsImportModalOpen(false)} />}
         </>
     );
 };

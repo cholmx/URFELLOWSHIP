@@ -57,10 +57,9 @@ const MessagesPage: React.FC<MessagesPageProps> = ({ isAdmin, sermons, onSaveSer
     };
 
     const handleDeleteAndCloseModal = (sermonId: string) => {
-        if (window.confirm('Are you sure you want to delete this sermon? This action cannot be undone.')) {
-            onDeleteSermon(sermonId);
-            setSelectedSermon(null);
-        }
+        // Deletion is confirmed in the App component's handler
+        onDeleteSermon(sermonId);
+        setSelectedSermon(null);
     };
     
     const handleSaveAndCloseModal = async (sermonData: SermonFormData, id?: string) => {

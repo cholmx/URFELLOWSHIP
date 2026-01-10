@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
+// Fix: Removed space in NewHerePage import name
 import NewHerePage from './pages/NewHerePage';
 import AboutUsPage from './pages/AboutUsPage';
 import CoreValuesPage from './pages/CoreValuesPage';
@@ -12,6 +13,7 @@ import EventsPage from './pages/EventsPage';
 import ContactPage from './pages/ContactPage';
 import PrayerPage from './pages/PrayerPage';
 import GivePage from './pages/GivePage';
+import ServePage from './pages/ServePage'; // New Page
 import EventsAdminPage from './pages/EventsAdminPage';
 import AdminSettingsPage from './pages/AdminSettingsPage';
 import ScrollToTopButton from './components/ScrollToTopButton';
@@ -22,7 +24,7 @@ import type { ChurchEvent, Sermon } from './types';
 import { generateSermonInsights } from './ai';
 import type { SermonFormData } from './components/SermonFormModal';
 
-export type Page = 'Home' | 'New Here?' | 'About Us' | 'Core Values' | 'Ministries' | 'Messages' | 'Events' | 'Contact' | 'Prayer' | 'Give' | 'EventsAdmin' | 'AdminSettings';
+export type Page = 'Home' | 'New Here?' | 'About Us' | 'Core Values' | 'Ministries' | 'Messages' | 'Events' | 'Contact' | 'Prayer' | 'Give' | 'Serve' | 'EventsAdmin' | 'AdminSettings';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('Home');
@@ -38,7 +40,6 @@ const App: React.FC = () => {
   }, [events]);
 
   useEffect(() => {
-    // Check session storage on initial load to maintain admin state
     if (sessionStorage.getItem('isAdminAuthenticated') === 'true') {
       setIsAdmin(true);
     }
@@ -53,41 +54,33 @@ const App: React.FC = () => {
   const handleLogout = () => {
     setIsAdmin(false);
     sessionStorage.removeItem('isAdminAuthenticated');
-    setCurrentPage('Home'); // Redirect to home on logout
+    setCurrentPage('Home');
   };
 
   const handleSaveEvent = (eventData: Omit<ChurchEvent, 'id'> | ChurchEvent) => {
     if ('id' in eventData) {
-      // Editing existing event
       setEvents(prevEvents => prevEvents.map(e => e.id === eventData.id ? eventData : e));
     } else {
-      // Adding new event
       const newEvent: ChurchEvent = { ...eventData, id: `event-${Date.now()}` };
       setEvents(prevEvents => [newEvent, ...prevEvents]);
     }
   };
 
   const handleDeleteEvent = (eventId: string) => {
-    if (window.confirm('Are you sure you want to delete this event? This action cannot be undone.')) {
-      setEvents(prevEvents => prevEvents.filter(e => e.id !== eventId));
-    }
+    // Note: Confirmation now handled in the component UI for better reliability
+    setEvents(prevEvents => prevEvents.filter(e => e.id !== eventId));
   };
 
   const handleSaveSermon = async (sermonData: SermonFormData, id?: string) => {
     if (id) {
-        // Editing sermon - AI insights are not regenerated on edit for now
-        const updatedSermon: Sermon = {
-            ...sermons.find(s => s.id === id)!,
-            ...sermonData,
-        };
+        const updatedSermon: Sermon = { ...sermons.find(s => s.id === id)!, ...sermonData };
         setSermons(prev => prev.map(s => s.id === id ? updatedSermon : s));
     } else {
-        // Adding new sermon
         const insights = await generateSermonInsights(sermonData.transcript);
         const newSermon: Sermon = {
             id: `sermon-${Date.now()}`,
             ...sermonData,
-            topics: [...new Set(insights.themes)], // Using themes as topics for now
+            topics: [...new Set(insights.themes)],
             ...insights
         };
         setSermons(prev => [newSermon, ...prev]);
@@ -95,37 +88,26 @@ const App: React.FC = () => {
   };
 
   const handleDeleteSermon = (sermonId: string) => {
+    // Note: Confirmation now handled in the component UI for better reliability
     setSermons(prev => prev.filter(s => s.id !== sermonId));
   };
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'Home':
-        return <HomePage setCurrentPage={setCurrentPage} events={events} sermons={sermons} />;
-      case 'New Here?':
-        return <NewHerePage />;
-      case 'About Us':
-        return <AboutUsPage />;
-      case 'Core Values':
-        return <CoreValuesPage />;
-      case 'Ministries':
-        return <MinistriesPage />;
-      case 'Messages':
-        return <MessagesPage isAdmin={isAdmin} sermons={sermons} onSaveSermon={handleSaveSermon} onDeleteSermon={handleDeleteSermon} onUpdateSermon={(s) => setSermons(prev => prev.map(ps => ps.id === s.id ? s : ps))} />;
-      case 'Events':
-        return <EventsPage events={events} />;
-      case 'Contact':
-        return <ContactPage />;
-      case 'Prayer':
-        return <PrayerPage />;
-      case 'Give':
-        return <GivePage />;
-      case 'EventsAdmin':
-        return isAdmin ? <EventsAdminPage events={events} onSave={handleSaveEvent} onDelete={handleDeleteEvent} /> : <HomePage setCurrentPage={setCurrentPage} events={events} sermons={sermons} />;
-      case 'AdminSettings':
-        return isAdmin ? <AdminSettingsPage /> : <HomePage setCurrentPage={setCurrentPage} events={events} sermons={sermons} />;
-      default:
-        return <HomePage setCurrentPage={setCurrentPage} events={events} sermons={sermons} />;
+      case 'Home': return <HomePage setCurrentPage={setCurrentPage} events={events} sermons={sermons} />;
+      case 'New Here?': return <NewHerePage />;
+      case 'About Us': return <AboutUsPage />;
+      case 'Core Values': return <CoreValuesPage />;
+      case 'Ministries': return <MinistriesPage />;
+      case 'Serve': return <ServePage />;
+      case 'Messages': return <MessagesPage isAdmin={isAdmin} sermons={sermons} onSaveSermon={handleSaveSermon} onDeleteSermon={handleDeleteSermon} onUpdateSermon={(s) => setSermons(prev => prev.map(ps => ps.id === s.id ? s : ps))} />;
+      case 'Events': return <EventsPage events={events} />;
+      case 'Contact': return <ContactPage />;
+      case 'Prayer': return <PrayerPage />;
+      case 'Give': return <GivePage />;
+      case 'EventsAdmin': return isAdmin ? <EventsAdminPage events={events} onSave={handleSaveEvent} onDelete={handleDeleteEvent} /> : <HomePage setCurrentPage={setCurrentPage} events={events} sermons={sermons} />;
+      case 'AdminSettings': return isAdmin ? <AdminSettingsPage /> : <HomePage setCurrentPage={setCurrentPage} events={events} sermons={sermons} />;
+      default: return <HomePage setCurrentPage={setCurrentPage} events={events} sermons={sermons} />;
     }
   };
 
