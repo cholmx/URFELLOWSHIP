@@ -3,7 +3,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
-// Fix: Removed space in NewHerePage import name
 import NewHerePage from './pages/NewHerePage';
 import AboutUsPage from './pages/AboutUsPage';
 import CoreValuesPage from './pages/CoreValuesPage';
@@ -13,7 +12,7 @@ import EventsPage from './pages/EventsPage';
 import ContactPage from './pages/ContactPage';
 import PrayerPage from './pages/PrayerPage';
 import GivePage from './pages/GivePage';
-import ServePage from './pages/ServePage'; // New Page
+import ServePage from './pages/ServePage';
 import EventsAdminPage from './pages/EventsAdminPage';
 import AdminSettingsPage from './pages/AdminSettingsPage';
 import ScrollToTopButton from './components/ScrollToTopButton';
@@ -67,7 +66,6 @@ const App: React.FC = () => {
   };
 
   const handleDeleteEvent = (eventId: string) => {
-    // Note: Confirmation now handled in the component UI for better reliability
     setEvents(prevEvents => prevEvents.filter(e => e.id !== eventId));
   };
 
@@ -88,14 +86,13 @@ const App: React.FC = () => {
   };
 
   const handleDeleteSermon = (sermonId: string) => {
-    // Note: Confirmation now handled in the component UI for better reliability
     setSermons(prev => prev.filter(s => s.id !== sermonId));
   };
 
   const renderPage = () => {
     switch (currentPage) {
       case 'Home': return <HomePage setCurrentPage={setCurrentPage} events={events} sermons={sermons} />;
-      case 'New Here?': return <NewHerePage />;
+      case 'New Here?': return <NewHerePage setCurrentPage={setCurrentPage} />;
       case 'About Us': return <AboutUsPage />;
       case 'Core Values': return <CoreValuesPage />;
       case 'Ministries': return <MinistriesPage />;
@@ -114,7 +111,7 @@ const App: React.FC = () => {
   return (
     <div className="bg-brand-bg text-brand-text font-body font-medium min-h-screen flex flex-col">
       <Header currentPage={currentPage} setCurrentPage={setCurrentPage} isAdmin={isAdmin} onLogout={handleLogout} hasUpcomingEvents={hasUpcomingEvents} />
-      <main className="flex-grow">
+      <main className={`flex-grow transition-all duration-700 ${currentPage === 'Home' ? '' : 'pt-32 md:pt-48 pb-24'}`}>
         {renderPage()}
       </main>
       <Footer setCurrentPage={setCurrentPage} onAdminLoginClick={() => setIsLoginModalOpen(true)} hasUpcomingEvents={hasUpcomingEvents} />

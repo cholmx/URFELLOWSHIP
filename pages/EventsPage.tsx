@@ -28,46 +28,46 @@ const EventsPage: React.FC<EventsPageProps> = ({ events }) => {
   const FilterButton: React.FC<{ category: 'All' | 'Event' | 'Class', children: React.ReactNode }> = ({ category, children }) => (
     <button
       onClick={() => setFilter(category)}
-      className={`px-6 py-2 rounded-full font-header font-extrabold text-sm uppercase tracking-wider transition-colors duration-300
-        ${filter === category ? 'bg-brand-primary text-white' : 'bg-white text-brand-text hover:bg-gray-200'}`}
+      className={`px-8 py-2.5 rounded-full font-header font-extrabold text-[10px] uppercase tracking-[0.2em] transition-all duration-300
+        ${filter === category ? 'bg-brand-ink text-white shadow-lg' : 'bg-white text-gray-400 border border-gray-100 hover:text-brand-ink'}`}
     >
       {children}
     </button>
   );
 
   return (
-    <div className="animate-fade-in">
-      <section className="relative py-20 bg-cover bg-center text-white" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1488521787991-ed7b2f28a727?q=80&w=2070&auto=format&fit=crop')"}}>
-        <div className="absolute inset-0 bg-black/50"></div>
-        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="font-header font-extrabold text-5xl md:text-6xl tracking-tight">Events & Classes</h1>
-          <p className="font-accent italic text-2xl mt-2">Join us for what's happening at Upper Room</p>
-        </div>
+    <div className="bg-brand-bg min-h-screen">
+      <section className="container mx-auto px-6 mb-20 text-center">
+          <FadeInOnScroll>
+              <p className="font-header text-brand-primary uppercase tracking-[0.4em] text-[10px] font-extrabold mb-6">The Calendar</p>
+              <h1 className="font-accent italic text-brand-ink text-6xl md:text-8xl tracking-tight">Gatherings.</h1>
+              <p className="font-header text-gray-500 text-lg md:text-xl max-w-2xl mx-auto mt-8 leading-relaxed">
+                  Community happens when we prioritize being together. Find a gathering, a class, or an event to join our story.
+              </p>
+          </FadeInOnScroll>
       </section>
 
-      <section className="py-12 bg-brand-light-gray sticky top-20 z-40 shadow-sm">
-        <FadeInOnScroll className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-center items-center space-x-2 sm:space-x-4">
+      <section className="sticky top-24 md:top-28 z-30 mb-20 flex justify-center items-center gap-3">
+        <FadeInOnScroll className="flex gap-2 bg-white/50 backdrop-blur-md p-2 rounded-full border border-white/50 shadow-xl">
           <FilterButton category="All">All</FilterButton>
           <FilterButton category="Event">Events</FilterButton>
           <FilterButton category="Class">Classes</FilterButton>
         </FadeInOnScroll>
       </section>
 
-      <section className="py-20 bg-brand-bg">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <section className="container mx-auto px-6 mb-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
             {filteredEvents.length > 0 ? (
               filteredEvents.map((event, index) => (
-                <FadeInOnScroll key={event.id} style={{ transitionDelay: `${(index % 3) * 150}ms` }}>
+                <FadeInOnScroll key={event.id} style={{ transitionDelay: `${(index % 3) * 100}ms` }}>
                   <EventCard event={event} />
                 </FadeInOnScroll>
               ))
             ) : (
-              <p className="md:col-span-2 lg:col-span-3 text-center text-gray-500 text-xl py-12">
-                No upcoming {filter !== 'All' ? filter.toLowerCase() + 's' : 'events'} scheduled at this time. Please check back soon!
-              </p>
+              <div className="col-span-full py-32 text-center">
+                 <p className="font-accent italic text-3xl text-gray-300">No gatherings currently scheduled in this category.</p>
+              </div>
             )}
-          </div>
         </div>
       </section>
     </div>

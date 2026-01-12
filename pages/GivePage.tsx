@@ -16,44 +16,67 @@ const GivePage: React.FC = () => {
     };
 
   return (
-    <div className="animate-fade-in">
-      <section className="relative py-20 bg-cover bg-center text-white" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=2070&auto=format&fit=crop')"}}>
-        <div className="absolute inset-0 bg-black/50"></div>
-        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="font-header font-extrabold text-5xl md:text-6xl tracking-tight">Give Generously</h1>
-          <p className="font-accent italic text-2xl mt-2">"God loves a cheerful giver." - 2 Corinthians 9:7</p>
+    <div className="bg-brand-bg min-h-screen">
+      <section className="container mx-auto px-6 mb-24">
+        <div className="grid lg:grid-cols-2 gap-12 items-end">
+            <FadeInOnScroll>
+                <p className="font-header text-brand-primary uppercase tracking-[0.4em] text-[10px] font-extrabold mb-6">Partnership • Worship</p>
+                <h1 className="font-accent italic text-brand-ink text-6xl md:text-[9rem] leading-[0.85] tracking-tighter mb-8">
+                    Generous <br />
+                    <span className="text-brand-primary">Lives.</span>
+                </h1>
+            </FadeInOnScroll>
+            <FadeInOnScroll>
+                <p className="font-accent italic text-2xl text-gray-400 mb-8 max-w-md">
+                    God loves a cheerful giver. Your generosity fuels our mission to transform lives.
+                </p>
+            </FadeInOnScroll>
         </div>
       </section>
 
-      <section className="py-20 bg-brand-bg">
-        <FadeInOnScroll className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto text-center">
-                <h2 className="font-header font-extrabold text-4xl tracking-tight">An Act of Worship</h2>
-                 <div className="mt-6 text-lg text-gray-700 leading-relaxed space-y-4">
-                    <p>Your generosity fuels our mission to transform lives and communities. Through your faithful giving, you're partnering with us to create spaces where people can treasure God's presence, build healthy relationships, and find purpose through serving others.</p>
-                    <p>At Upper Room Fellowship, we believe in living the Gospel through overwhelming generosity. Just as Jesus gave everything for us, opening the way for our complete salvation, healing, and deliverance, we're called to give freely and joyfully to further His kingdom on earth. When we give, we reflect God's character and participate in His work of restoration.</p>
-                 </div>
+      <section className="py-32 bg-brand-sand rounded-[4rem]">
+        <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto">
+                <FadeInOnScroll>
+                    <div className="grid md:grid-cols-12 gap-12">
+                        <div className="md:col-span-4">
+                            <h2 className="font-header font-extrabold text-4xl tracking-tighter leading-none mb-6">An Act of <br />Worship.</h2>
+                            <div className="w-12 h-1 bg-brand-primary"></div>
+                        </div>
+                        <div className="md:col-span-8">
+                            <div className="text-lg text-gray-500 leading-relaxed space-y-8 font-medium">
+                                <p>Through your faithful giving you are partnering with us to create spaces where people can encounter God. We believe in living the Gospel through overwhelming generosity. Just as Jesus gave everything for us we are called to give freely to further His kingdom.</p>
+                                <p>We steward every resource with integrity. Our goal is to be good news to our neighbors and our city.</p>
+                            </div>
+                        </div>
+                    </div>
+                </FadeInOnScroll>
             </div>
-        </FadeInOnScroll>
+        </div>
       </section>
 
-      <section className="py-20 bg-brand-light-gray">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-             <FadeInOnScroll>
-                <h2 className="text-center font-header font-extrabold text-4xl tracking-tight mb-12">Why We Give</h2>
-                <p className="max-w-3xl mx-auto text-center text-lg text-gray-700 leading-relaxed mb-12">The Bible teaches that generous giving is an act of worship that reflects our trust in God's provision and our commitment to His mission. In 2 Corinthians 9:6-7, we're encouraged to give cheerfully, not reluctantly or under compulsion, because God loves a cheerful giver. Giving is not about obligation but opportunity—the opportunity to:</p>
-             </FadeInOnScroll>
-             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                 {whyGiveItems.map((item, index) => (
+      <section className="py-40 bg-brand-bg">
+        <div className="container mx-auto px-6">
+             <div className="text-center mb-24">
+                <p className="font-header text-brand-primary uppercase tracking-[0.4em] text-[10px] font-extrabold mb-4">The Impact</p>
+                <h2 className="font-accent italic text-5xl md:text-7xl text-brand-ink tracking-tight">Why we give.</h2>
+             </div>
+             
+             <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-12">
+                 {[
+                    { number: "01", title: "Worship God", description: "Honoring Him with our firsts" },
+                    { number: "02", title: "Soul Growth", description: "Trusting God's provision" },
+                    { number: "03", title: "Local Ministry", description: "Transforming our city" },
+                    { number: "04", title: "Gratitude", description: "Reflecting His generosity" },
+                    { number: "05", title: "Kingdom Work", description: "Global impact partnerships" },
+                 ].map((item, index) => (
                     <FadeInOnScroll key={item.number} style={{ transitionDelay: `${index * 100}ms` }}>
-                        <div className="flex items-start space-x-6">
-                            <div className="flex-shrink-0 flex items-center justify-center h-16 w-16 rounded-full bg-brand-primary text-white font-header font-extrabold text-3xl">
+                        <div className="text-center group">
+                            <div className="h-20 w-20 rounded-full bg-brand-sand text-brand-primary flex items-center justify-center mx-auto mb-8 font-header font-black text-2xl group-hover:bg-brand-primary group-hover:text-white transition-all shadow-sm">
                                 {item.number}
                             </div>
-                            <div>
-                                <h3 className="font-header font-extrabold text-xl">{item.title}</h3>
-                                <p className="mt-1 text-gray-600">{item.description}</p>
-                            </div>
+                            <h3 className="font-header font-extrabold text-lg mb-3 tracking-tight">{item.title}</h3>
+                            <p className="text-gray-400 text-[10px] leading-relaxed uppercase font-extrabold tracking-widest">{item.description}</p>
                         </div>
                     </FadeInOnScroll>
                  ))}
@@ -61,99 +84,90 @@ const GivePage: React.FC = () => {
         </div>
       </section>
       
-      <section className="py-20 bg-brand-bg">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <FadeInOnScroll>
-                <h2 className="text-center font-header font-extrabold text-4xl tracking-tight">Ways to Give</h2>
-            </FadeInOnScroll>
-            <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      <section className="py-40 bg-brand-ink text-white relative overflow-hidden rounded-[5rem] mx-6">
+        <div className="container mx-auto px-12 relative z-10">
+            <div className="text-center mb-24">
+                <h2 className="font-header font-extrabold text-5xl md:text-7xl tracking-tighter">Ways to Give</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
                 <FadeInOnScroll>
-                    <GiveCard title="Online Giving" description="Make a secure one-time gift or set up recurring donations through our online giving platform.">
-                        <a href="#" className="mt-6 inline-block bg-brand-primary text-white font-header font-extrabold uppercase tracking-widest py-3 px-8 rounded-full transition-all transform hover:scale-105 duration-300 shadow-lg">Give Online</a>
-                    </GiveCard>
+                    <div className="text-center">
+                        <h3 className="font-header font-extrabold text-2xl mb-6">Online Giving</h3>
+                        <p className="text-white/40 text-sm leading-relaxed mb-10 font-medium">Make a secure one-time gift or set up recurring donations through our giving platform.</p>
+                        <a href="#" className="inline-block bg-brand-primary text-brand-ink font-header font-extrabold uppercase tracking-widest py-5 px-10 rounded-full transition-all hover:bg-white hover:scale-105 shadow-2xl text-[10px]">Give Online Now</a>
+                    </div>
                 </FadeInOnScroll>
                  <FadeInOnScroll style={{ transitionDelay: '150ms' }}>
-                    <GiveCard title="Text to Give" description="Text ​'urf $50' (or any amount) ​to 73256 to give instantly from your phone." />
+                    <div className="text-center">
+                        <h3 className="font-header font-extrabold text-2xl mb-6">Text to Give</h3>
+                        <p className="text-white/40 text-sm leading-relaxed mb-10 font-medium">Text urf and the amount to 73256 to give instantly from your mobile device.</p>
+                        <div className="text-brand-primary font-accent italic text-4xl">73256</div>
+                    </div>
                  </FadeInOnScroll>
                  <FadeInOnScroll style={{ transitionDelay: '300ms' }}>
-                    <GiveCard title="In-Person Giving" description="Place your gift in the offering boxes located at the Connection Center during Sunday services, or drop by the church office." />
+                    <div className="text-center">
+                        <h3 className="font-header font-extrabold text-2xl mb-6">In-Person</h3>
+                        <p className="text-white/40 text-sm leading-relaxed mb-10 font-medium">Place your gift in the offering boxes located at the doors during our Sunday services.</p>
+                        <div className="w-12 h-1 bg-brand-primary mx-auto"></div>
+                    </div>
                  </FadeInOnScroll>
             </div>
-            <FadeInOnScroll className="mt-8 text-center text-gray-600">
-                <h3 className="font-header font-bold">Other Ways</h3>
-                <p className="mt-2">You can also mail checks to 500 Sponseller Rd, Columbiana, OH 44408, or contact our finance team about legacy giving and stock donations.</p>
-            </FadeInOnScroll>
         </div>
       </section>
       
-      <section className="py-20 bg-brand-secondary">
-        <FadeInOnScroll className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto">
-                <h2 className="text-center font-header font-extrabold text-4xl tracking-tight">Financial Accountability</h2>
-                <p className="text-center mt-4 text-lg text-gray-700 leading-relaxed mb-8">
-                    We're committed to stewarding your gifts with integrity and transparency. Upper Room Fellowship follows strict financial protocols. Your contributions primarily support our local church ministries, facilities, staff, and outreach efforts, with a portion designated to missions.
-                </p>
-            </div>
-        </FadeInOnScroll>
-      </section>
-      
-       <section className="py-20 bg-brand-bg">
-            <FadeInOnScroll className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="max-w-3xl mx-auto">
-                    <h2 className="text-center font-header font-extrabold text-4xl tracking-tight">Share Your Story</h2>
-                    <p className="text-center mt-4 text-lg text-gray-700 leading-relaxed mb-12">
-                        Your story of generosity can inspire others. Consider sharing how giving has impacted your life by submitting a testimony.
-                    </p>
-                    <div className="bg-white p-8 rounded-lg shadow-xl">
-                      {isTestimonySubmitted ? (
-                          <div className="text-center bg-green-100 border-l-4 border-green-500 text-green-700 p-6 rounded-md" role="alert">
-                              <p className="font-bold">Thank You!</p>
-                              <p>Your testimony has been submitted. We appreciate you sharing your story!</p>
-                          </div>
-                      ) : (
-                        <form onSubmit={handleTestimonySubmit} className="space-y-6">
-                            <div>
-                                <label htmlFor="name" className="block text-sm font-bold text-gray-700">Your Name</label>
-                                <input type="text" name="name" id="name" value={testimonyData.name} required onChange={handleTestimonyChange} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-primary focus:border-brand-primary" />
+      <section className="py-40 bg-brand-bg">
+            <div className="container mx-auto px-6">
+                <div className="grid lg:grid-cols-12 gap-24 items-start">
+                    <div className="lg:col-span-5">
+                        <FadeInOnScroll>
+                            <p className="font-header text-brand-primary uppercase tracking-[0.4em] text-[10px] font-extrabold mb-8">Testimony</p>
+                            <h2 className="font-header font-extrabold text-5xl md:text-7xl tracking-tighter leading-none mb-8">Share your <br />story.</h2>
+                            <p className="text-gray-500 text-xl leading-relaxed font-medium">
+                                Your story of generosity can inspire others. We would love to hear how giving has impacted your life.
+                            </p>
+                        </FadeInOnScroll>
+                    </div>
+                    <div className="lg:col-span-7">
+                        <FadeInOnScroll>
+                            <div className="bg-white p-12 md:p-20 rounded-[4rem] border border-gray-100 shadow-2xl relative overflow-hidden">
+                                {isTestimonySubmitted ? (
+                                    <div className="text-center py-20 animate-reveal">
+                                        <div className="w-24 h-24 bg-brand-sand rounded-full flex items-center justify-center mx-auto mb-10 shadow-inner">
+                                            <svg className="w-10 h-10 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                                        </div>
+                                        <h2 className="font-header font-extrabold text-4xl mb-4 tracking-tight">Thank You.</h2>
+                                        <p className="text-gray-500 font-medium">Your story has been received with gratitude.</p>
+                                    </div>
+                                ) : (
+                                    <form onSubmit={handleTestimonySubmit} className="space-y-10">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-gray-400">Full Name</label>
+                                                <input type="text" name="name" value={testimonyData.name} required onChange={handleTestimonyChange} className="w-full bg-brand-sand border-none rounded-2xl p-5 focus:ring-2 focus:ring-brand-primary transition-all outline-none font-bold" />
+                                            </div>
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-gray-400">Email Address</label>
+                                                <input type="email" name="email" value={testimonyData.email} required onChange={handleTestimonyChange} className="w-full bg-brand-sand border-none rounded-2xl p-5 focus:ring-2 focus:ring-brand-primary transition-all outline-none font-bold" />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-gray-400">Your Story</label>
+                                            <textarea name="message" value={testimonyData.message} required onChange={handleTestimonyChange} rows={6} className="w-full bg-brand-sand border-none rounded-2xl p-5 focus:ring-2 focus:ring-brand-primary transition-all outline-none font-bold"></textarea>
+                                        </div>
+                                        <button type="submit" className="w-full bg-brand-ink text-white font-header font-extrabold uppercase tracking-[0.3em] py-6 rounded-2xl hover:bg-brand-primary transition-all shadow-xl text-[10px] mt-6">
+                                            Submit Your Story
+                                        </button>
+                                    </form>
+                                )}
                             </div>
-                             <div>
-                                <label htmlFor="email" className="block text-sm font-bold text-gray-700">Email Address</label>
-                                <input type="email" name="email" id="email" value={testimonyData.email} required onChange={handleTestimonyChange} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-primary focus:border-brand-primary" />
-                            </div>
-                             <div>
-                                <label htmlFor="message" className="block text-sm font-bold text-gray-700">Your message</label>
-                                <textarea name="message" id="message" value={testimonyData.message} required onChange={handleTestimonyChange} rows={5} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-primary focus:border-brand-primary"></textarea>
-                            </div>
-                            <div>
-                                <button type="submit" className="w-full flex justify-center py-3 px-4 border border-transparent rounded-full shadow-sm text-sm font-header font-extrabold uppercase tracking-widest text-white bg-brand-text hover:bg-opacity-90">
-                                    Drop us a testimony
-                                </button>
-                            </div>
-                        </form>
-                      )}
+                        </FadeInOnScroll>
                     </div>
                 </div>
-            </FadeInOnScroll>
+            </div>
       </section>
-
     </div>
   );
 };
-
-const whyGiveItems = [
-    { number: "01", title: "Worship God", description: "By honoring Him with our finances" },
-    { number: "02", title: "Grow Spiritually", description: "As we trust God with our resources" },
-    { number: "03", title: "Invest in Ministry", description: "That transforms lives locally and globally" },
-    { number: "04", title: "Express Gratitude", description: "For God's generosity toward us" },
-    { number: "05", title: "Partner with God", description: "In building His kingdom on earth" },
-];
-
-const GiveCard: React.FC<{ title: string; description: string; children?: React.ReactNode }> = ({ title, description, children }) => (
-    <div className="bg-white p-8 rounded-lg shadow-md text-center flex flex-col items-center h-full">
-        <h3 className="font-header font-extrabold text-2xl">{title}</h3>
-        <p className="mt-2 text-gray-600 flex-grow">{description}</p>
-        {children}
-    </div>
-);
 
 export default GivePage;

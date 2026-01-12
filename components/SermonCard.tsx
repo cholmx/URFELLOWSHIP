@@ -11,20 +11,29 @@ interface SermonCardProps {
 const SermonCard: React.FC<SermonCardProps> = ({ sermon, onSelect, isFeatured = false }) => {
     if (isFeatured) {
         return (
-             <div className="bg-white rounded-lg shadow-xl overflow-hidden md:flex">
-                <div className="md:w-1/2">
-                    <img className="h-64 w-full object-cover md:h-full" src={sermon.imageUrl} alt={sermon.title} />
-                </div>
-                <div className="p-8 md:w-1/2 flex flex-col justify-center">
-                    <p className="font-header uppercase tracking-widest text-sm text-brand-primary font-extrabold">{sermon.series}</p>
-                    <h3 className="mt-2 font-header font-extrabold text-3xl tracking-tight text-brand-text">{sermon.title}</h3>
-                    <p className="mt-2 text-gray-500 font-accent italic text-xl">{sermon.speaker}</p>
-                    <p className="mt-1 text-sm text-gray-400">{new Date(sermon.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                    <p className="mt-4 text-gray-600 font-body leading-relaxed flex-grow">{sermon.description.substring(0, 120)}...</p>
-                    <div className="mt-6">
-                         <button onClick={onSelect} className="w-full bg-brand-text text-white font-header font-extrabold uppercase tracking-widest py-3 px-4 rounded-full transition-transform transform hover:scale-105 duration-300 text-sm">
-                            View Message
-                         </button>
+             <div className="relative group overflow-hidden rounded-[4rem] bg-white border border-gray-100 transition-all duration-700 hover:shadow-2xl" onClick={onSelect}>
+                <div className="md:flex min-h-[550px]">
+                    <div className="md:w-3/5 overflow-hidden">
+                        <img 
+                            className="h-full w-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105" 
+                            src={sermon.imageUrl} 
+                            alt={sermon.title} 
+                        />
+                    </div>
+                    <div className="p-16 md:w-2/5 flex flex-col justify-center bg-white relative">
+                        <div className="absolute -top-10 -right-10 text-[180px] font-accent font-black text-brand-sand/50 pointer-events-none select-none">
+                            NEW
+                        </div>
+                        <div className="relative z-10">
+                          <p className="font-header uppercase tracking-[0.4em] text-[10px] text-brand-primary font-extrabold mb-6">{sermon.series}</p>
+                          <h3 className="font-header font-extrabold text-5xl leading-tight text-brand-ink mb-6 tracking-tighter">{sermon.title}</h3>
+                          <p className="font-accent italic text-2xl text-gray-500 mb-8">{sermon.speaker}</p>
+                          <p className="text-gray-400 text-sm leading-relaxed mb-10 font-medium">{sermon.description.substring(0, 180)}...</p>
+                          
+                          <button className="flex items-center gap-4 font-header font-extrabold text-xs uppercase tracking-[0.2em] text-brand-ink group-hover:gap-8 transition-all duration-500">
+                              Watch the Message <span className="text-2xl">→</span>
+                          </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -32,17 +41,20 @@ const SermonCard: React.FC<SermonCardProps> = ({ sermon, onSelect, isFeatured = 
     }
     
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 flex flex-col">
-      <img className="h-48 w-full object-cover" src={sermon.imageUrl} alt={sermon.title} />
-      <div className="p-6 flex flex-col flex-grow">
-        <p className="font-header uppercase tracking-widest text-xs text-brand-primary font-extrabold">{sermon.series}</p>
-        <h3 className="mt-1 font-header font-extrabold text-xl tracking-normal text-brand-text">{sermon.title}</h3>
-        <p className="mt-1 text-gray-500 font-accent italic">{sermon.speaker}</p>
-        <p className="text-xs text-gray-400 mt-1">{new Date(sermon.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-        <div className="mt-auto pt-4 border-t border-gray-200">
-            <button onClick={onSelect} className="w-full bg-gray-200 text-gray-800 font-header font-extrabold uppercase tracking-widest py-2 px-2 rounded-full transition-colors hover:bg-gray-300 text-xs">
-                View Details
-            </button>
+    <div className="group cursor-pointer flex flex-col h-full bg-white rounded-[3rem] overflow-hidden border border-gray-100 hover:border-brand-primary transition-all duration-500 hover:shadow-xl" onClick={onSelect}>
+      <div className="relative overflow-hidden aspect-[16/11]">
+        <img className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" src={sermon.imageUrl} alt={sermon.title} />
+        <div className="absolute inset-0 bg-brand-ink/10 group-hover:bg-transparent transition-colors duration-700"></div>
+        <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-sm">
+            <p className="text-[10px] font-extrabold uppercase tracking-widest text-brand-ink">{sermon.series}</p>
+        </div>
+      </div>
+      <div className="p-10 flex flex-col flex-grow">
+        <h3 className="font-header font-extrabold text-2xl text-brand-ink group-hover:text-brand-primary transition-colors mb-3 tracking-tight">{sermon.title}</h3>
+        <p className="text-gray-500 font-accent italic text-lg mb-6">{sermon.speaker}</p>
+        <div className="mt-auto pt-8 flex items-center justify-between border-t border-gray-50">
+            <span className="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">{new Date(sermon.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+            <span className="text-brand-primary text-xl font-black group-hover:translate-x-2 transition-transform">→</span>
         </div>
       </div>
     </div>

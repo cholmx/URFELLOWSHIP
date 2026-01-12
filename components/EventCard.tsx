@@ -10,40 +10,34 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const eventDate = new Date(event.date);
 
   const formattedDate = eventDate.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
+    month: 'short',
     day: 'numeric',
   });
 
   const formattedTime = eventDate.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
-    hour12: true,
   });
 
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 flex flex-col">
-      <div className="relative">
-        <img className="h-48 w-full object-cover" src={event.imageUrl} alt={event.title} />
-        <span
-          className={`absolute top-2 right-2 text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-full text-white
-            ${event.category === 'Class' ? 'bg-blue-600' : 'bg-brand-primary'}`}
-        >
-          {event.category}
-        </span>
-      </div>
-      <div className="p-6 flex flex-col flex-grow">
-        <h3 className="font-header font-extrabold text-xl tracking-normal text-brand-text">{event.title}</h3>
-        <p className="mt-2 font-semibold text-brand-primary text-sm">{formattedDate}</p>
-        <p className="text-gray-500 text-sm">{formattedTime}</p>
-        <p className="mt-2 text-sm text-gray-600">{event.location}</p>
-        <p className="mt-3 text-sm text-gray-700 flex-grow">{event.description.substring(0, 100)}{event.description.length > 100 ? '...' : ''}</p>
-        <div className="mt-auto pt-4 border-t border-gray-200">
-           <button className="w-full bg-gray-200 text-gray-800 font-header font-extrabold uppercase tracking-widest py-2 px-2 rounded-full transition-colors hover:bg-gray-300 text-xs">
-                Learn More
-            </button>
+    <div className="group bg-brand-bg rounded-2xl border border-gray-100 p-4 hover:border-brand-primary/30 transition-all duration-500">
+      <div className="relative overflow-hidden rounded-xl aspect-[4/3]">
+        <img className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" src={event.imageUrl} alt={event.title} />
+        <div className="absolute bottom-4 left-4 bg-brand-text text-white p-3 rounded-lg flex flex-col items-center justify-center min-w-[60px] shadow-2xl">
+            <span className="text-[10px] font-bold uppercase tracking-widest opacity-60 leading-none mb-1">{eventDate.toLocaleDateString('en-US', { month: 'short' })}</span>
+            <span className="text-2xl font-header font-black leading-none">{eventDate.getDate()}</span>
         </div>
+      </div>
+      <div className="pt-6 px-2 flex flex-col">
+        <div className="flex items-center gap-2 mb-3">
+            <span className={`text-[10px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full ${event.category === 'Class' ? 'bg-blue-50 text-blue-600' : 'bg-brand-sand text-brand-primary'}`}>{event.category}</span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{formattedTime}</span>
+        </div>
+        <h3 className="font-header font-bold text-xl text-brand-text mb-3 tracking-tight group-hover:text-brand-primary transition-colors">{event.title}</h3>
+        <p className="text-gray-500 text-sm mb-4 leading-relaxed">{event.location}</p>
+        <button className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand-text group-hover:text-brand-primary flex items-center gap-2 transition-all">
+            RSVP Details <span className="opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all">→</span>
+        </button>
       </div>
     </div>
   );

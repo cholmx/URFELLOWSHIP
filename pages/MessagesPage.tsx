@@ -57,7 +57,6 @@ const MessagesPage: React.FC<MessagesPageProps> = ({ isAdmin, sermons, onSaveSer
     };
 
     const handleDeleteAndCloseModal = (sermonId: string) => {
-        // Deletion is confirmed in the App component's handler
         onDeleteSermon(sermonId);
         setSelectedSermon(null);
     };
@@ -68,7 +67,7 @@ const MessagesPage: React.FC<MessagesPageProps> = ({ isAdmin, sermons, onSaveSer
     };
 
     return (
-        <>
+        <div className="bg-brand-bg min-h-screen">
             {selectedSermon && (
                 <SermonDetailModal 
                     sermon={selectedSermon} 
@@ -86,89 +85,108 @@ const MessagesPage: React.FC<MessagesPageProps> = ({ isAdmin, sermons, onSaveSer
                     onCancel={() => setIsFormModalOpen(false)}
                 />
             )}
-            <div className="animate-fade-in">
-                <section className="bg-brand-secondary py-12">
-                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                        <h1 className="font-header font-extrabold text-5xl md:text-6xl tracking-tight">Messages</h1>
-                        <p className="font-accent italic text-2xl mt-2 text-gray-600">It's not about religious knowledge—it's about transformation.</p>
+            
+            <section className="container mx-auto px-6 mb-20 pt-12 md:pt-24">
+                <div className="flex flex-col md:flex-row justify-between items-end gap-8 border-b border-gray-100 pb-16">
+                    <div className="max-w-3xl">
+                        <FadeInOnScroll>
+                            <p className="font-header text-brand-primary uppercase tracking-[0.4em] text-[10px] font-extrabold mb-6">Sermon Finder & Archive</p>
+                            <h1 className="font-accent italic text-brand-ink text-6xl md:text-[9.5rem] leading-[0.8] tracking-tighter">Messages.</h1>
+                        </FadeInOnScroll>
                     </div>
-                </section>
+                    {isAdmin && (
+                        <FadeInOnScroll>
+                            <button onClick={handleOpenAddForm} className="bg-brand-ink text-white font-header font-extrabold uppercase tracking-widest py-4 px-10 rounded-full transition-transform hover:scale-105 duration-300 shadow-xl text-[10px]">
+                                + Add Sermon
+                            </button>
+                        </FadeInOnScroll>
+                    )}
+                </div>
+            </section>
 
-                <section className="py-20 bg-brand-bg">
-                    <FadeInOnScroll className="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-4xl">
-                        <div className="flex justify-between items-center">
-                             <h2 className="font-header font-extrabold text-4xl tracking-tight">Subscribe to Our Podcast</h2>
-                             {isAdmin && (
-                                <button onClick={handleOpenAddForm} className="bg-brand-primary text-white font-header font-extrabold uppercase tracking-widest py-2 px-5 rounded-full transition-transform transform hover:scale-105 duration-300 shadow-md text-sm">Add New Sermon</button>
-                             )}
-                        </div>
-                        <p className="mt-4 text-lg text-gray-700 leading-relaxed">
-                        Never miss a message! Subscribe to our podcast on Apple Podcasts, Spotify, or your favorite podcast platform to receive our latest teachings automatically. Perfect for commutes, workouts, or whenever you want to engage with biblical teaching on the go.
-                        </p>
-                        <div className="mt-8 flex justify-center items-center space-x-4">
-                            <a href="#" className="bg-brand-text text-white font-header font-extrabold uppercase tracking-widest py-3 px-6 rounded-full transition-transform transform hover:scale-105 duration-300 shadow-md text-sm sm:text-base">Apple Podcasts</a>
-                            <a href="#" className="bg-brand-text text-white font-header font-extrabold uppercase tracking-widest py-3 px-6 rounded-full transition-transform transform hover:scale-105 duration-300 shadow-md text-sm sm:text-base">Spotify</a>
-                        </div>
-                    </FadeInOnScroll>
-                </section>
-
-                <section className="py-12 bg-white sticky top-20 z-40 shadow-sm">
-                    <FadeInOnScroll className="container mx-auto px-4 sm:px-6 lg:px-8">
-                        <h3 className="text-center font-header font-extrabold text-3xl tracking-tight mb-6">Find a Message</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <input
-                                type="text"
-                                placeholder="Search by keyword..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-brand-primary focus:border-brand-primary"
-                                aria-label="Search sermons"
-                            />
+            {/* Editorial Filter Bar */}
+            <section className="sticky top-24 md:top-28 z-30 mb-24">
+                <div className="container mx-auto px-6">
+                    <div className="glass rounded-[2rem] border border-gray-100/50 p-3 shadow-2xl">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder="Search messages..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="w-full h-14 pl-14 pr-4 bg-white/50 rounded-full border border-gray-100 text-[10px] font-bold uppercase tracking-widest focus:ring-1 focus:ring-brand-primary focus:border-brand-primary outline-none transition-all shadow-inner"
+                                />
+                                <svg className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </div>
                             <select
                                 value={selectedSpeaker}
                                 onChange={(e) => setSelectedSpeaker(e.target.value)}
-                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-brand-primary focus:border-brand-primary bg-white"
-                                aria-label="Filter by speaker"
+                                className="w-full h-14 px-8 bg-white/50 rounded-full border border-gray-100 text-[10px] font-bold uppercase tracking-widest appearance-none outline-none focus:ring-1 focus:ring-brand-primary cursor-pointer hover:bg-white transition-colors"
                             >
                                 {speakers.map(speaker => <option key={speaker} value={speaker}>{speaker === 'All' ? 'All Speakers' : speaker}</option>)}
                             </select>
                             <select
                                 value={selectedSeries}
                                 onChange={(e) => setSelectedSeries(e.target.value)}
-                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-brand-primary focus:border-brand-primary bg-white"
-                                aria-label="Filter by series"
+                                className="w-full h-14 px-8 bg-white/50 rounded-full border border-gray-100 text-[10px] font-bold uppercase tracking-widest appearance-none outline-none focus:ring-1 focus:ring-brand-primary cursor-pointer hover:bg-white transition-colors"
                             >
                                 {series.map(s => <option key={s} value={s}>{s === 'All' ? 'All Series' : s}</option>)}
                             </select>
-                             <select
+                            <select
                                 value={selectedTheme}
                                 onChange={(e) => setSelectedTheme(e.target.value)}
-                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-brand-primary focus:border-brand-primary bg-white"
-                                aria-label="Filter by theme"
+                                className="w-full h-14 px-8 bg-white/50 rounded-full border border-gray-100 text-[10px] font-bold uppercase tracking-widest appearance-none outline-none focus:ring-1 focus:ring-brand-primary cursor-pointer hover:bg-white transition-colors"
                             >
                                 {themes.map(theme => <option key={theme} value={theme}>{theme === 'All' ? 'All Themes' : theme}</option>)}
                             </select>
                         </div>
-                    </FadeInOnScroll>
-                </section>
-                
-                <section className="py-20 bg-brand-light-gray">
-                    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {filteredSermons.length > 0 ? (
-                                filteredSermons.map((sermon, index) => (
-                                    <FadeInOnScroll key={sermon.id} style={{ transitionDelay: `${(index % 3) * 150}ms` }}>
-                                        <SermonCard sermon={sermon} onSelect={() => setSelectedSermon(sermon)} />
-                                    </FadeInOnScroll>
-                                ))
-                            ) : (
-                                <p className="md:col-span-2 lg:col-span-3 text-center text-gray-500 text-xl py-12">No sermons found matching your criteria.</p>
-                            )}
-                        </div>
                     </div>
-                </section>
-            </div>
-        </>
+                </div>
+            </section>
+
+            <section className="container mx-auto px-6 mb-32">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+                    {filteredSermons.length > 0 ? (
+                        filteredSermons.map((sermon, index) => (
+                            <FadeInOnScroll key={sermon.id} style={{ transitionDelay: `${(index % 3) * 100}ms` }}>
+                                <SermonCard sermon={sermon} onSelect={() => setSelectedSermon(sermon)} />
+                            </FadeInOnScroll>
+                        ))
+                    ) : (
+                        <div className="col-span-full py-48 text-center">
+                            <p className="font-accent italic text-4xl text-gray-300">No messages found matching your search.</p>
+                            <button onClick={() => { setSearchTerm(''); setSelectedSpeaker('All'); setSelectedSeries('All'); setSelectedTheme('All'); }} className="mt-8 text-[10px] font-extrabold uppercase tracking-widest text-brand-primary border-b border-brand-primary pb-1">Clear all filters</button>
+                        </div>
+                    )}
+                </div>
+            </section>
+
+            {/* Podcast Section */}
+            <section className="bg-brand-sand py-40">
+                <div className="container mx-auto px-6">
+                    <div className="grid lg:grid-cols-2 gap-24 items-center">
+                        <FadeInOnScroll>
+                            <p className="font-header text-brand-primary uppercase tracking-[0.4em] text-[10px] font-extrabold mb-8">Podcast Network</p>
+                            <h2 className="font-header font-extrabold text-5xl md:text-7xl tracking-tighter mb-10 leading-none">Take the word <br />with you.</h2>
+                            <p className="text-gray-500 text-lg md:text-xl leading-relaxed mb-16 font-medium">
+                                Never miss a message. Subscribe to our podcast to receive every teaching automatically on your favorite platform. Perfect for commutes, workouts, or personal study.
+                            </p>
+                            <div className="flex flex-wrap gap-6">
+                                <a href="#" className="bg-brand-ink text-white font-header font-extrabold uppercase tracking-widest text-[10px] py-5 px-12 rounded-full hover:bg-brand-primary transition-all shadow-2xl">Apple Podcasts</a>
+                                <a href="#" className="bg-white text-brand-ink font-header font-extrabold uppercase tracking-widest text-[10px] py-5 px-12 rounded-full hover:bg-brand-sand transition-all border border-gray-100 shadow-lg">Spotify</a>
+                            </div>
+                        </FadeInOnScroll>
+                        <FadeInOnScroll>
+                            <div className="relative group overflow-hidden rounded-[4rem] shadow-2xl border-8 border-white">
+                                <img src="https://images.unsplash.com/photo-1590602847861-f357a9332bbc?q=80&w=2070&auto=format&fit=crop" className="w-full h-[500px] object-cover grayscale transition-transform duration-[2000ms] group-hover:scale-110" alt="Podcast" />
+                                <div className="absolute inset-0 bg-brand-primary/20 mix-blend-multiply transition-opacity duration-700 group-hover:opacity-0"></div>
+                            </div>
+                        </FadeInOnScroll>
+                    </div>
+                </div>
+            </section>
+        </div>
     );
 };
 

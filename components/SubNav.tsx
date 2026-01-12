@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 
 interface SubNavLink {
@@ -16,8 +17,7 @@ const SubNav: React.FC<SubNavProps> = ({ links }) => {
   const handleScroll = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      // Height of main header (80px) + subnav (64px) + extra space (6px)
-      const headerOffset = 150; 
+      const headerOffset = 180; 
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
@@ -37,9 +37,8 @@ const SubNav: React.FC<SubNavProps> = ({ links }) => {
       });
     };
     
-    // rootMargin offsets the intersection check to account for the sticky headers.
     observer.current = new IntersectionObserver(handleIntersect, {
-      rootMargin: '-150px 0px -50% 0px',
+      rootMargin: '-200px 0px -50% 0px',
       threshold: 0
     });
 
@@ -56,22 +55,24 @@ const SubNav: React.FC<SubNavProps> = ({ links }) => {
   }, [links]);
 
   return (
-    <nav className="sticky top-20 bg-brand-light-gray/90 backdrop-blur-lg z-30 shadow-sm">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-center items-center h-16 space-x-4 md:space-x-8 overflow-x-auto whitespace-nowrap">
-          {links.map(link => (
-            <button
-              key={link.id}
-              onClick={() => handleScroll(link.id)}
-              className={`font-header font-extrabold text-sm uppercase tracking-wider transition-colors duration-300 pb-1 border-b-2
-                ${activeLink === link.id
-                  ? 'text-brand-primary border-brand-primary'
-                  : 'text-gray-500 border-transparent hover:text-brand-text'
-                }`}
-            >
-              {link.label}
-            </button>
-          ))}
+    <nav className="sticky top-24 md:top-32 z-30 transition-all duration-500">
+      <div className="container mx-auto px-6">
+        <div className="flex justify-center">
+            <div className="glass px-4 rounded-full border border-gray-100/50 shadow-xl inline-flex items-center h-12 gap-1 overflow-x-auto whitespace-nowrap max-w-full no-scrollbar">
+                {links.map(link => (
+                    <button
+                        key={link.id}
+                        onClick={() => handleScroll(link.id)}
+                        className={`px-6 h-8 rounded-full font-header font-bold text-[10px] uppercase tracking-widest transition-all
+                            ${activeLink === link.id
+                                ? 'bg-brand-ink text-white shadow-sm'
+                                : 'text-gray-400 hover:text-brand-ink'
+                            }`}
+                    >
+                        {link.label}
+                    </button>
+                ))}
+            </div>
         </div>
       </div>
     </nav>
